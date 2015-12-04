@@ -6,7 +6,6 @@ percent="3"
 number="3"
 cutoff=0
 
-#process script arguments
 while [[ $# > 0 ]]; do
 	key="$1"
 	case $key in
@@ -29,13 +28,11 @@ while [[ $# > 0 ]]; do
 	esac
 done
 
-#get sysinfo | skip first line (column headers) | sort numerically, reverse, by particular column | display first n lines | print the percentage column, process columns
-procs=`ps aux | tail -n +2 | sort -n -rk $metric | head -n $number | awk -v perccol=$percent '{print $perccol" "substr($0, index($0,$11))}'`
+procs=`ps aux | tail -n +2 | sort -n -rk $metric | head -n $number | awk -v \
+    perccol=$percent '{print $perccol" "substr($0, index($0,$11))}'`
 
-#split by newlines, for loop over lines
 IFS=$'\n'
 
-#if cutoff specified, remove entries below the cutoff
 if [ $cutoff != 0 ]; then
 	remaining_procs=''
 	for p in $procs; do
@@ -49,18 +46,13 @@ if [ $cutoff != 0 ]; then
 	procs=$remaining_procs
 fi
 
-# create line string that can be appended to
 line=""
 for p in $procs; do
 
-	# set ifs back to space which is default
 	IFS=" "
-	# make set out of elements in line
 	set -- $p
-	# reset name2 in case nothing is there
 	name2=""
 
-	# define percentage of the process
 	percent=$1
 	shift
 
@@ -104,7 +96,6 @@ for p in $procs; do
 
 	fi
 
-	# add this process info to the line of processes
 	line="$line $percent $name1$name2"
 done
 printf "%s\n" "$line"
