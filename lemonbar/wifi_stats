@@ -1,0 +1,13 @@
+# give interface as arg, can use :q
+interface=$1
+
+strength=`iwconfig $interface | awk -F '=' '/Quality/ {print $2}' | awk -F ' ' '{print $1}' | awk -F '/' '{print ($1/$2*100)}'`
+network=`iwconfig $interface | awk -F '"' '/ESSID/ {print $2}'`
+
+if [ "$strength" = "" ]; then
+	net=0
+else
+	net=${network,,}:${strength%.*} # .* removes decimal, ,, makes lower case
+fi
+
+echo N${net} > "$PANEL_FIFO"

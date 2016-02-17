@@ -1,0 +1,13 @@
+#!/bin/bash
+kb=$(setxkbmap -query|awk '/layout/ {print $2}')
+case $kb in
+us) kb="is"
+;;
+is) kb="se"
+;;
+se) kb="us"
+;;
+esac
+setxkbmap -layout $kb
+echo "K$kb" > "$PANEL_FIFO"
+exit 0

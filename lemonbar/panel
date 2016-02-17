@@ -1,0 +1,34 @@
+#! /bin/sh
+
+# must be in .bash_profile:
+# export PANEL_FIFO="/tmp/panel-fifo"
+# export PATH=$PATH:/path/to/scripts
+# export PANEL_FIFO
+
+
+if [ $(pgrep -cx panel) -gt 1 ] ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+#make bspwm behave with bar
+bspc config top_padding 11
+bspc control --subscribe > "$PANEL_FIFO" &
+
+# panel populating commands
+clock -sf 'S%H.%M' > "$PANEL_FIFO" &
+vol=`amixer get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//'` && echo "V$vol" > "$PANEL_FIFO" &
+/home/matt/.scripts/battery_man &
+kb=$(setxkbmap -query|awk '/layout/ {print $2}') && echo "K$kb" > "$PANEL_FIFO" &
+(while :; do wifi_stats; sleep 60; done) &
+
+source panel_colors
+
+cat "$PANEL_FIFO" | panel_bar | lemonbar -g x18 -f "-*-lemon-medium-r-normal-*-10-*-*-*-m-*-*-1" -F "$COLOR_FG" -B "$COLOR_BG" -u 0 | while read action; do bash -c "${action}"; done &
+
+wait

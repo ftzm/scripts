@@ -1,0 +1,14 @@
+#!/bin/bash
+OLD_IFS=$IFS
+IFS=$'\n'
+songInfo=( $(mocp -i) )
+state="${songInfo[0]:7}"
+if [[ $state = PLAY || $state = PAUSE ]]
+then
+curTitle="${songInfo[2]:7}"
+curSec="${songInfo[10]:12}"
+lengthSec="${songInfo[8]:10}"
+curPercent=$((((curSec*100))/$lengthSec))
+echo  "\${execbar echo $curPercent} $curTitle"
+fi
+exit

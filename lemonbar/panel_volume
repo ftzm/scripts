@@ -1,0 +1,10 @@
+#!/bin/bash
+
+amixer -c 0 set Master 3dB$1 -q
+
+if [[ -e "$PANEL_FIFO" && -n $(pgrep lemonbar) ]]; then
+	vol=`amixer get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//'`
+	echo "V$vol" > "$PANEL_FIFO" 
+fi
+
+exit 0

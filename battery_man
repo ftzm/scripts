@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#The following needs to be declared here so that cron knows how to pipe to lemonbar fifo
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/matt/bin
+export PANEL_FIFO="/tmp/panel-fifo"
+export DISPLAY=:0
+
+bat=`cat /sys/class/power_supply/BAT0/capacity`
+
+if [ `cat /sys/class/power_supply/BAT0/status` = "Discharging" ]; then
+	plug=0
+else
+	plug=1
+fi
+
+if [[ -p "$PANEL_FIFO" && -n $(pgrep lemonbar) ]] ; then
+	echo "B$plug$bat" > $PANEL_FIFO
+fi
+
+if [ $plug == 0 ] && [ "$bat" -le "10" ]; then
+	batwarn	
+fi
+
+if [ $plug == 0 ] && [ "$bat" -le "2" ]; then
+	systemctl hibernate
+fi
+
+exit 0

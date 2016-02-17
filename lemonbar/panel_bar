@@ -1,0 +1,107 @@
+#! /bin/sh
+#
+# Example panel for LemonBoy's bar
+
+. panel_colors
+
+num_mon=$(bspc query -M | wc -l)
+
+while read -r line ; do
+	case $line in
+
+		N*)	# network
+			if [ "${line#?}" == 0 ]; then
+				net="%{A:nmcli_dmenu:}%{F$COLOR_ICON_FG}⮷%{F-}%{F$COLOR_STATUS_FG} not connected%{A}"
+			else
+				IFS=':' read -a netarr <<< "${line#?}"
+				net="%{A:nmcli_dmenu:}%{F$COLOR_ICON_FG}⮷%{F-}%{F$COLOR_STATUS_FG} ${netarr[0]} - ${netarr[1]}%{A}"
+
+			fi
+			;;	
+
+		V*)	# volume
+			vol="%{F$COLOR_ICON_FG}⮟%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} ${line#?} %{B-}%{F-}"
+			;;
+
+		K*)	# keyboard layout
+			kbd="  %{F$COLOR_ICON_FG}⮣%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} ${line#?}%{B-}%{F-}"
+			;;
+
+		B*)	# battery
+			bstat=${line#?}
+			plug=${bstat:0:1}
+			bat=${bstat:1}
+
+			if [ $plug == 1 ]; then
+        			if [ $bat == 100 ]; then
+                			#battery="%{F$COLOR_ICON_FG} B%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} Full %{B-}%{F-}"
+					battery=""
+        			else 
+                			battery="%{F$COLOR_ICON_FG} ⮒%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} $bat %{B-}%{F-}"
+        			fi
+			else
+                		battery="%{F$COLOR_ICON_FG} ⮑%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} $bat %{B-}%{F-}"
+			fi
+			;;
+
+
+		S*)
+			# clock output
+			sys_infos="%{F$COLOR_ICON_FG}/%{F-}%{F$COLOR_STATUS_FG}%{B$COLOR_BG} ${line#?}  %{B-}%{F-}"
+			;;
+		W*)
+			# bspwm internal state
+			wm_infos=""
+			IFS=':'
+			set -- ${line#?}
+			while [ $# -gt 0 ] ; do
+				item=$1
+				name=${item#?}
+				case $item in
+					M*)
+						# active monitor
+						if [ $num_mon -gt 1 ] ; then
+							wm_infos="$wm_infos %{F$COLOR_ACTIVE_MONITOR_FG}%{B$COLOR_ACTIVE_MONITOR_BG} ${name} %{B-}%{F-}  "
+						fi
+						;;
+					m*)
+						# inactive monitor
+						if [ $num_mon -gt 1 ] ; then
+							wm_infos="$wm_infos %{F$COLOR_INACTIVE_MONITOR_FG}%{B$COLOR_INACTIVE_MONITOR_BG} ${name} %{B-}%{F-}  "
+						fi
+						;;
+					O*)
+						# focused occupied desktop
+						wm_infos="${wm_infos} %{F$COLOR_FOCUSED_OCCUPIED_FG}%{B$COLOR_BG}%{U$COLOR_FOCUSED_OCCUPIED_FG}%{+u} ${name} %{-u}%{B-}%{F-}"
+						;;
+					F*)
+						# focused free desktop
+						wm_infos="${wm_infos} %{F$COLOR_FOCUSED_OCCUPIED_FG}%{B$COLOR_BG}%{U$COLOR_FOCUSED_OCCUPIED_FG}%{+u} ${name} %{-u}%{B-}%{F-}"
+						;;
+					U*)
+						# focused urgent desktop
+						wm_infos="${wm_infos} %{F$COLOR_BG}%{B$COLOR_BG}%{U$COLOR_FOCUSED_OCCUPIED_FG}%{+u} ${name} %{-u}%{B-}%{F-}"
+						;;
+					o*)
+						# occupied desktop
+						wm_infos="${wm_infos} %{F$COLOR_FG}%{B$COLOR_BG}%{U$COLOR_OCCUPIED_FG}%{+u} ${name} %{-u}%{B-}%{F-}"
+						;;
+					f*)
+						# free desktop
+						wm_infos="${wm_infos} %{F$COLOR_FG}%{B$COLOR_BG} ${name} %{B-}%{F-}"
+						;;
+					u*)
+						# urgent desktop
+						wm_infos="${wm_infos} %{F$COLOR_URGENT_FG}%{B$COLOR_BG} ${name} %{B-}%{F-}"
+						;;
+					L*)
+						# layout
+						layout="%{F$COLOR_LAYOUT_FG}%{B$COLOR_BG} ${name} %{B-}%{F-}"
+						#;;
+				esac
+				shift
+			done
+			;;
+	esac
+	printf "%s\n" "%{B}%{l}${wm_infos}%{r}${net}${kbd} ${battery} ${vol} ${sys_infos}${try}"
+done

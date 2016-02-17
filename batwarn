@@ -1,0 +1,10 @@
+ #/bin/bash
+
+#simple warning for low battery
+
+ (
+ echo "BATTERY LOW: PLUG IN OR SAVE WORK" # Fist line goes to title
+ ) | dzen2 -fn '-*-lemon-medium-r-normal-*-10-*-*-*-*-*-*-*' -bg red -fg white -p -x "0" -y "0" -w "1024" -ta 'c'\
+    -title-name 'popup_sysinfo' -e 'onstart=uncollapse,grabkeys;button1=exit;button3=exit;key_Escape=ungrabkeys,exit'
+
+ # "onstart=uncollapse" ensures that slave window is visible from start.

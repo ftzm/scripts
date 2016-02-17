@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# a simple dmenu session script 
+#
+###
+
+DMENU='dmenu -fn -*-lemon-medium-r-normal-*-10-*-*-*-m-*-*-1 -nb #151515 -nf #585858 -sb #151515 -sf #91ba0d -h 18'
+
+#choice=$(echo -e "logout\nshutdown\nreboot\nsuspend\nhibernate" | $DMENU)
+choice=$(echo -e "quit\nshutdown\nreboot\nsuspend\nhibernate" | dmenu -fn -*-lemon-medium-r-normal-*-10-*-*-*-m-*-*-1 -nb "#151515" -nf "#585858" -sb "#151515" -sf "#91ba0d" -h 18 -p " system actions:")
+
+case "$choice" in
+  quit) bspc quit & ;;
+  shutdown) sudo shutdown -h now & ;;
+  reboot) sudo shutdown -r now & ;;
+  suspend) systemctl suspend & ;;
+  hibernate) systemctl hibernate & ;;
+esac
