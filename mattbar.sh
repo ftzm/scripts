@@ -16,8 +16,13 @@ mkfifo "${PANEL_FIFO}"
 python -u $(dirname $0)/myi3.py > "$PANEL_FIFO" &
 
 # clock feed
-clock -sf 'S%H.%M' > "$PANEL_FIFO" &
+#clock -sf 'S%H.%M' > "$PANEL_FIFO" &
 
+# alternate clock
+while :; do
+	echo "S$(date "+%a %b %d, %T")" > "$PANEL_FIFO"
+	sleep 1
+done &
 # battery feed
 # only runs once here, use cron for updates
 /home/matt/bin/battery_man &
