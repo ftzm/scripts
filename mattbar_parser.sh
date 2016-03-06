@@ -111,9 +111,12 @@ while read -r line ; do
 				wss="$wss$ws"
 			done
 			;;
+        *)
+            xmonad=$line
+
 
 	esac
 
 	# print all statusbar components together
-	printf "%s\n" "%{l}${wss}%{r}$cpu$mem$mus$net$kb$vol$bat$clock"
+	printf "%s\n" "%{l}$xmonad${wss}%{r}$cpu$mem$mus$net$kb$vol$bat$clock"
 done
