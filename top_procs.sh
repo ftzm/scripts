@@ -5,6 +5,7 @@ metric="3,3" # measure cpu
 percent="3"
 number="3"
 cutoff=0
+length=20
 
 while [[ $# > 0 ]]; do
 	key="$1"
@@ -20,6 +21,10 @@ while [[ $# > 0 ]]; do
 			;;
 		-c|--cutoff)
 			cutoff=$2
+			shift
+			;;
+		-l|--length)
+			length=$2
 			shift
 			;;
 		*)
@@ -96,6 +101,7 @@ for p in $procs; do
 
 	fi
 
-	line="$line $percent $name1$name2"
+    name="$name1$name2"
+	line="$line $percent ${name:0:$length}"
 done
 printf "%s\n" "$line"
