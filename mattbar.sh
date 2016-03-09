@@ -1,4 +1,4 @@
-sldkfj;sdljf#!/bin/bash
+#!/bin/bash
 
 #PANEL_FIFO="/tmp/i3_lemonbar_${USER}"
 #fifo defined in bash profile so that distributed scripts can pipe to it with ease
