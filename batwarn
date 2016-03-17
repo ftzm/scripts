@@ -1,10 +1,24 @@
- #/bin/bash
+ #!/bin/bash
 
-#simple warning for low battery
+line=`xrandr | head -1`
+set -- $line
+shift 7
+width=$1
 
- (
- echo "BATTERY LOW: PLUG IN OR SAVE WORK" # Fist line goes to title
- ) | dzen2 -fn '-*-lemon-medium-r-normal-*-10-*-*-*-*-*-*-*' -bg red -fg white -p -x "0" -y "0" -w "1024" -ta 'c'\
-    -title-name 'popup_sysinfo' -e 'onstart=uncollapse,grabkeys;button1=exit;button3=exit;key_Escape=ungrabkeys,exit'
+echo "BATTERY LOW: PLUG IN OR SAVE WORK" | dzen2 \
+-fn '-*-lemon-medium-r-normal-*-10-*-*-*-*-*-*-*' \
+-bg "#DC322F" \
+-fg white \
+-p \
+-x "0" \
+-y "0" \
+-w "${width}" \
+-h "14" \
+-ta 'c' \
+-title-name 'popup_sysinfo' \
+-e "\
+onstart=uncollapse,grabkeys;\
+button1=exit;\
+button3=exit;\
+key_Escape=ungrabkeys,exit"
 
- # "onstart=uncollapse" ensures that slave window is visible from start.
