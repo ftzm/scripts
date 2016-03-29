@@ -1,18 +1,37 @@
 """script to run closest unit tests"""
 import os
-from subprocess import call
+from subprocess import call, check_output
 
-query_dir = os.getcwd()
-files = os.listdir(query_dir)
-if 'tests.py' in files and '__init__.py' in files:
-    module_name = os.path.basename(query_dir)
 
-root_dir = ''
-while query_dir is not '/':
-    query_dir = os.path.dirname(query_dir)
-    if 'manage.py' in os.listdir(query_dir):
-        root_dir = query_dir
-        break
+def find_up(query_dir, string):
+    while query_dir is not "/":
+        if string in os.listdir(query_dir):
+            return query_dir
+        else:
+            query_dir = os.path.dirname(query_dir)
 
-if root_dir:
-    call("python {}/manage.py test".format(root_dir), shell=True)
+
+def unzoom():
+    flags = check_output("tmux display-message -p '#F'".split(' '))
+    if "Z" in str(flags):
+        call("tmux resize-pane -Z")
+
+
+def assemble_command():
+    module_dir = find_up(os.getcwd(), "__init__.py")
+    try:
+        module_name = os.path.basename(module_dir)
+        base_dir = find_up(module_dir, "manage.py")
+        return "python {}/manage.py test {}".format(base_dir, module_name)
+    except AttributeError:
+        return None
+
+
+def main():
+    command = assemble_command()
+    if command:
+        unzoom()
+    call(command, shell=True)
+
+if __name__ == "__main__":
+    main()

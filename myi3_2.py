@@ -28,6 +28,7 @@ magic_string = 'i3-ipc'
 struct_header = '<%dsII' % len(magic_string.encode('utf-8'))
 struct_header_size = struct.calcsize(struct_header)
 
+
 class Socket():
 
     def __init__(self):
@@ -177,4 +178,3 @@ def print_workspaces(event):
     print(output)
 
 sub_sock.subscribe('workspace', print_workspaces)
-
