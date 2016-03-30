@@ -27,8 +27,12 @@ runCmd _ = return ()
 
 main :: IO ()
 main = do
-  flags <- readProcess "tmux" ["display-message", "-p", "'#F'"] []
-  if elem 'Z' flags then callCommand "tmux resize-pane -Z" else return()
-  catch (cmdArgs >>= runCmd) handler
-    where handler :: SomeException -> IO ()
-          handler _ = return ()
+  catch runtest handler
+    where
+      runtest = do
+        cmdArgs >>= runCmd
+        callCommand "tmux display 'Tests Succesful'"
+      handler :: SomeException -> IO ()
+      handler _ = do
+        flags <- readProcess "tmux" ["display-message", "-p", "'#F'"] []
+        if elem 'Z' flags then callCommand "tmux resize-pane -Z" else return()
