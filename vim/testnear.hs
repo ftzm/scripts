@@ -12,27 +12,25 @@ inDirConts :: String -> FilePath -> IO Bool
 inDirConts x y = elem x <$> getDirectoryContents y
 
 lowMatch :: String -> FilePath -> IO (Maybe FilePath)
-lowMatch x y = listToMaybe <$> (filterM (inDirConts x) $ dirParents y)
+lowMatch x y = listToMaybe <$> filterM (inDirConts x) (dirParents y)
 
 cmdArgs :: IO (Maybe [FilePath])
 cmdArgs = do
   mod_dir <- getCurrentDirectory >>= lowMatch "__init__.py"
   base_dir <- maybe (return Nothing) (lowMatch "manage.py") mod_dir
-  let mod_name = fmap takeBaseName mod_dir
-  return $ sequence [base_dir, mod_name]
+  return $ sequence [base_dir, fmap takeBaseName base_dir]
 
 runCmd :: Maybe [String] -> IO ()
-runCmd (Just (x:y:[])) = callProcess "python" [(x ++ "/manage.py"), "test", y]
+runCmd (Just (x:y:[])) = callProcess "python" [x ++ "/manage.py", "test", y]
 runCmd _ = return ()
 
 main :: IO ()
-main = do
-  catch runtest handler
-    where
-      runtest = do
-        cmdArgs >>= runCmd
-        callCommand "tmux display 'Tests Succesful'"
-      handler :: SomeException -> IO ()
-      handler _ = do
-        flags <- readProcess "tmux" ["display-message", "-p", "'#F'"] []
-        if elem 'Z' flags then callCommand "tmux resize-pane -Z" else return()
+main = catch runtest handler
+  where
+    flags = readProcess "tmux" ["display-message", "-p", "'#F'"] []
+    runtest = do
+      cmdArgs >>= runCmd
+      (notElem 'Z' <$> flags) >>= flip when (callCommand "tmux resize-pane -Z -t {top}")
+      callCommand "tmux display 'Tests Succesful'"
+    handler :: SomeException -> IO ()
+    handler _ = (elem 'Z' <$> flags) >>= flip when (callCommand "tmux resize-pane -Z")
