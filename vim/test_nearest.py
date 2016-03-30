@@ -14,7 +14,7 @@ def find_up(query_dir, string):
 def unzoom():
     flags = check_output("tmux display-message -p '#F'".split(' '))
     if "Z" in str(flags):
-        call("tmux resize-pane -Z")
+        call("tmux resize-pane -Z", shell=True)
 
 
 def assemble_command():

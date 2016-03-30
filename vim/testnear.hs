@@ -18,7 +18,7 @@ cmdArgs :: IO (Maybe [FilePath])
 cmdArgs = do
   mod_dir <- getCurrentDirectory >>= lowMatch "__init__.py"
   base_dir <- maybe (return Nothing) (lowMatch "manage.py") mod_dir
-  return $ sequence [base_dir, fmap takeBaseName base_dir]
+  return $ sequence [base_dir, fmap takeBaseName mod_dir]
 
 runCmd :: Maybe [String] -> IO ()
 runCmd (Just (x:y:[])) = callProcess "python" [x ++ "/manage.py", "test", y]
