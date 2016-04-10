@@ -13,7 +13,7 @@ bg="#002B36"
 mkfifo "${PANEL_FIFO}"
 
 # script to feed workspace info to fifo on change
-python -u $(dirname $0)/myi3.py > "$PANEL_FIFO" &
+# python -u $(dirname $0)/myi3.py > "$PANEL_FIFO" &
 
 # clock feed
 #clock -sf 'S%H.%M' > "$PANEL_FIFO" &
