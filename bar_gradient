@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+"""
+given a highlight and background color, calculate gradient points
+for bar sections
+"""
+from sys import argv
+from colour import Color
+
+start_color = argv[1]
+end_color = argv[2]
+number = int(argv[3])
+
+color1 = Color(start_color)
+color2 = Color(end_color)
+color2 = list(color1.range_to(color2, 6))[3]
+colors = list(color1.range_to(color2, number))
+print(' '.join([c.hex for c in colors]))

@@ -5,7 +5,9 @@ us) kb="is"
 ;;
 is) kb="se"
 ;;
-se) kb="us"
+se) kb="dk"
+;;
+dk) kb="us"
 ;;
 esac
 setxkbmap -layout $kb

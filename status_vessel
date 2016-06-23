@@ -5,14 +5,14 @@ read input
 length=${#input}
 length=$((length + 10))
 #length=$((length * 2.5))
-length=$(echo "$length*3.2" | bc)
+length=$(echo "$length*6" | bc)
 
 
 line=`xrandr | head -1`
 set -- $line
 shift 9
 height=${1::-1}
-y=$((height-19))
+y=$((height-18))
 
 date=$(date "+%H.%M")
 vol=`amixer get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//'`

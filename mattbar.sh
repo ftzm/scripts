@@ -3,7 +3,8 @@
 #PANEL_FIFO="/tmp/i3_lemonbar_${USER}"
 #fifo defined in bash profile so that distributed scripts can pipe to it with ease
 
-font="-*-lemon-medium-r-normal-*-10-*-*-*-m-*-*-1"
+#font="-*-lemon-medium-r-normal-*-10-*-*-*-m-*-*-1"
+font="Fira Mono:Medium:size=9"
 iconfont="-Misc-Stlarch-Medium-R-Normal--10-100-75-75-C-80-ISO10646-1"
 fg="#93a1a1"
 bg="#002B36"
@@ -20,7 +21,7 @@ mkfifo "${PANEL_FIFO}"
 
 # alternate clock
 while :; do
-	echo "S$(date "+%a %b %d, %T")" > "$PANEL_FIFO"
+	echo "S$(date "+%H.%M")" > "$PANEL_FIFO"
 	sleep 1
 done &
 # battery feed
@@ -39,13 +40,13 @@ kb=$(setxkbmap -query|awk '/layout/ {print $2}') && echo "K$kb" > "$PANEL_FIFO" 
 
 # cpu feed
 while :; do
-	echo "C`$(dirname $0)/top_procs.sh -c 1.5`" > "$PANEL_FIFO"
+	echo "C`$(dirname $0)/top_procs.sh -c 2`" > "$PANEL_FIFO"
 	sleep 2
 done &
 
 # mem feed
 while :; do
-	echo "M`$(dirname $0)/top_procs.sh -m -c 1`" > "$PANEL_FIFO"
+	echo "M`$(dirname $0)/top_procs.sh -m -c 2`" > "$PANEL_FIFO"
 	sleep 2
 done &
 
@@ -54,7 +55,7 @@ vol=`amixer get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//'` && echo "V$vol
 
 # pipe chain from fifo through parser to lemonbar
 cat "${PANEL_FIFO}" | $(dirname $0)/mattbar_parser.sh \
-	| lemonbar -g x14 -p -f "${font}" -f "${iconfont}" -F ${fg} -B ${bg} \
+	| lemonbar -g x16 -p -f "${font}" -f "${iconfont}" -F ${fg} -B ${bg} \
        | while read action; do bash -c "${action}"; done &
 
 wait

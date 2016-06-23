@@ -9,9 +9,15 @@ red="#DC322F"
 magenta="#D33682"
 violet="#6C71C4"
 blue="#268BD2"
+blue1="#1E77B2"
+blue2="#166493"
+blue3="#0F5174"
+blue4="#073E55"
 cyan="#2AA198"
 green="#859900"
 
+blues="$(bar_gradient $blue $bg 5)"
+blues=($blues)
 
 while read -r line ; do
 	case $line in
@@ -21,47 +27,49 @@ while read -r line ; do
             title_bracks="${mpd[@]:4}"
             title=${title_bracks:1:-1}
             if [ "${mpd[0]}" = "[playing]" ]; then
-                icon="⮓"
+                icon=">"
             else
-                icon="⮔"
+                icon="||"
             fi
-            mus="%{B$blue}%{F$bg} $icon %{F-}%{B-} $title  "
+            mus=" $title "
             ;;
 		N*)
 			if [ "${line#?}" == 0 ]; then
-				status="Not Connected"
+				#status="Not Connected"
+				status="down"
 			else
 				IFS=':' read -a netarr <<< "${line#?}"
-				status="${netarr[0]} - ${netarr[1]}"
+				#status="${netarr[0]} - ${netarr[1]}"
+				status="up"
 			fi
-			net="%{A:nmcli_dmenu:}%{B$blue}%{F$bg} ⮷ %{F-}%{B-} $status %{A}"
+			net="%{A:nmcli_dmenu:}%{B${blues[4]}}%{F$bg} $status %{B-}"
 			;;
 		B*)
 			bstat=${line#?}
 			plug=${bstat:0:1}
 			perc=${bstat:1}
-			bat="%{B$blue}%{F$bg}  ${perc} %{F-}%{B-}"
+			bat="%{B${blues[1]}}%{F$bg} bat ${perc} %{F-}%{B-}"
 			;;
 		V*)
-			vol="%{B$blue}%{F$bg} ⮟ ${line#?} %{F-}%{B-}"
+			vol="%{B${blues[2]}}%{F$bg} vol ${line#?} %{F-}%{B-}"
 			;;
 		S*)
-			clock="%{B$blue}%{F$bg}  ${line#?} %{F-}%{B-}"
+			clock="%{B$blue}%{F$bg} ${line#?} %{F-}%{B-}"
 			;;
 		K*)
-			kb=" %{B$blue}%{F$bg} ⮣ ${line#?} "
+			kb="%{B${blues[3]}}%{F$bg} ${line#?} %{F-}%{B-}"
 			;;
 		C*)
 			set -- ${line#?}
 			procs=""
 			while [[ $# > 1 ]]; do
-				procs="$procs$1%% $2  "
+				procs="$procs$1% $2  "
 				shift 2
 			done
 			if [[ $procs == "" ]]; then
 				cpu=""
             else
-				cpu="%{B$green}%{F$bg}  %{F-}%{B-}  $procs"
+				cpu="%{B$green}%{F$bg} $procs %{F-}%{B-}"
 			fi
 			;;
 
@@ -69,13 +77,13 @@ while read -r line ; do
 			set -- ${line#?}
 			procs=""
 			while [[ $# > 1 ]]; do
-				procs="$procs$1%% $2  "
+				procs="$procs$1% $2  "
 				shift 2
 			done
 			if [[ $procs == "" ]]; then
 				mem=""
 			else
-				mem="%{B$cyan}%{F$bg}  %{F-}%{B-}  $procs"
+				mem="%{B$cyan}%{F$bg} $procs %{F-}%{B-}"
 			fi
 			;;
 		3*)
@@ -118,5 +126,5 @@ while read -r line ; do
 	esac
 
 	# print all statusbar components together
-	printf "%s\n" "%{l}$xmonad${wss}%{r}$cpu$mem$mus$net$kb$vol$bat$clock"
+	printf "%s\n" "%{l}$xmonad${wss}%{r}$mus$net$kb$vol$bat$clock"
 done

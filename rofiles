@@ -9,21 +9,21 @@ shift 7
 width=$1
 
 rifle "$(
-find . -not -path '*/\.*' | \
+ag -g "" | \
 rofi -dmenu \
- -p "Find files: " \
- -fuzzy \
- -i \
- -width $width \
- -columns 1 \
- -color-window "${bg},${bg}" \
- -color-normal "${bg},${fg},${bg},${bg},${ffg}" \
- -bc "$bg" \
- -location 0 \
- -lines 16 \
- -bw 0 \
- -font "Fira Mono Medium 16" \
- -padding 200 \
- -separator-style none \
- -opacity 90 -hide-scrollbar
+-p "Find files: " \
+-fuzzy \
+-i \
+-width $width \
+-columns 1 \
+-color-window "${bg},${bg}" \
+-color-normal "${bg},${fg},${bg},${bg},${ffg}" \
+-bc "$bg" \
+-location 0 \
+-lines 16 \
+-bw 0 \
+-font "Fira Mono Medium 16" \
+-padding 200 \
+-separator-style none \
+-opacity 90 -hide-scrollbar
 )"
