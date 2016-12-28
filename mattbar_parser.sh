@@ -1,11 +1,27 @@
 #!/bin/bash
 
+##define colors
+#bg="#002B36"
+#fg="#93A1A1"
+#yellow="#B58900"
+#orange="#CB4B16"
+#red="#DC322F"
+#magenta="#D33682"
+#violet="#6C71C4"
+#blue="#268BD2"
+#blue1="#1E77B2"
+#blue2="#166493"
+#blue3="#0F5174"
+#blue4="#073E55"
+#cyan="#2AA198"
+#green="#859900"
+
 #define colors
 bg="#002B36"
 fg="#93A1A1"
 yellow="#B58900"
 orange="#CB4B16"
-red="#DC322F"
+red="#cc241d"
 magenta="#D33682"
 violet="#6C71C4"
 blue="#268BD2"
@@ -31,7 +47,7 @@ while read -r line ; do
             else
                 icon="||"
             fi
-            mus=" $title "
+            mus=" $title%{-u} "
             ;;
 		N*)
 			if [ "${line#?}" == 0 ]; then
@@ -42,22 +58,22 @@ while read -r line ; do
 				#status="${netarr[0]} - ${netarr[1]}"
 				status="up"
 			fi
-			net="%{A:nmcli_dmenu:}%{B${blues[4]}}%{F$bg} $status %{B-}"
+			net="%{A:nmcli_dmenu:} %{+u}%{U$red}$status%{-u} "
 			;;
 		B*)
 			bstat=${line#?}
 			plug=${bstat:0:1}
 			perc=${bstat:1}
-			bat="%{B${blues[1]}}%{F$bg} bat ${perc} %{F-}%{B-}"
+			bat=" %{+u}%{U$red}bat ${perc}%{-u} "
 			;;
 		V*)
-			vol="%{B${blues[2]}}%{F$bg} vol ${line#?} %{F-}%{B-}"
+			vol=" %{+u}%{U$red}vol ${line#?}%{-u} "
 			;;
 		S*)
-			clock="%{B$blue}%{F$bg} ${line#?} %{F-}%{B-}"
+			clock=" %{+u}%{U$red}${line#?}%{-u} "
 			;;
 		K*)
-			kb="%{B${blues[3]}}%{F$bg} ${line#?} %{F-}%{B-}"
+			kb=" %{+u}%{U$red}${line#?}%{-u} "
 			;;
 		C*)
 			set -- ${line#?}
@@ -69,7 +85,7 @@ while read -r line ; do
 			if [[ $procs == "" ]]; then
 				cpu=""
             else
-				cpu="%{B$green}%{F$bg} $procs %{F-}%{B-}"
+				cpu=" %{+u}%{U$red}$procs%{-u} "
 			fi
 			;;
 
@@ -83,7 +99,7 @@ while read -r line ; do
 			if [[ $procs == "" ]]; then
 				mem=""
 			else
-				mem="%{B$cyan}%{F$bg} $procs %{F-}%{B-}"
+				mem=" %{+u}%{U$red}$procs%{-u} "
 			fi
 			;;
 		3*)
@@ -114,7 +130,7 @@ while read -r line ; do
 					name="${num}"
 				fi
 				#put together workspace string
-				ws="%{B$wsbg}%{F$wsfg} ${name} %{B-}%{F-}"
+				ws=" ${name} "
 				#add workspace to growing workspaces string
 				wss="$wss$ws"
 			done

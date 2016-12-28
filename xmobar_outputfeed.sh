@@ -1,4 +1,4 @@
 #!/bin/bash
 while read line; do
-    echo "${line}" > $PANEL_FIFO
+    echo "${line}" > /tmp/xmonad_info
 done

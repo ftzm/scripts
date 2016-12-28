@@ -1,1 +1,1 @@
-stack exec hdevtools -- $@
+stack exec hdevtools check -- $@
