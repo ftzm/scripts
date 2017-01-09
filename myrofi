@@ -1,12 +1,14 @@
 #!/bin/bash
-bg="#002b36"
-fg="#93a1a1"
-ffg="#859900"
+bg="#282828"
+fg="ebdbb2"
+ffg="#fb4934"
 
 line=`xrandr | head -1`
 set -- $line
 shift 7
 width=$1
+height=${3::-1}
+padding=$(($height / 3))
 
 rofi -show run \
  -width $width \
@@ -18,6 +20,6 @@ rofi -show run \
  -lines 8 \
  -bw 0 \
  -font "Fira Mono Medium 16" \
- -padding 400 \
+ -padding $padding \
  -separator-style none \
  -opacity 90 -hide-scrollbar
