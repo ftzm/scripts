@@ -1,0 +1,1 @@
+xrandr --output eDP1 --auto --output DP3-1 --auto --right-of eDP1 --output DP3-2 --auto --right-of DP3-1 --rotate left

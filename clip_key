@@ -1,0 +1,6 @@
+#!/bin/bash
+account=$(find .password-store -not -path '*/\.*' -type f | cut -c17- | sed 's/....$//' | my_dmenu_pipe.sh)
+if [[ ${#account} -ge 3 ]]; then
+    xdotool type $(pass ${account})
+fi
+
