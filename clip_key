@@ -1,6 +1,11 @@
-#!/bin/bash
-account=$(find .password-store -not -path '*/\.*' -type f | cut -c17- | sed 's/....$//' | my_dmenu_pipe.sh)
-if [[ ${#account} -ge 3 ]]; then
-    xdotool type $(pass ${account})
-fi
+#!/usr/bin/env zsh
 
+# TERM is not set on nixos and for whatever reason prevents the pinentry dialogue from coming up
+TERM=xterm
+
+account=$(find .password-store -not -path '*/\.*' -type f | cut -c17- | sed 's/....$//' | my_dmenu_pipe.sh)
+pw=$(pass ${account})
+if [[ ${#account} -ge 3 ]]; then
+    xdotool type $pw
+    xdotool key Return
+fi
