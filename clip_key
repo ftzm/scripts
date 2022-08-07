@@ -6,6 +6,6 @@ TERM=xterm
 account=$(find .password-store -not -path '*/\.*' -type f | cut -c17- | sed 's/....$//' | my_dmenu_pipe.sh)
 pw=$(pass ${account})
 if [[ ${#account} -ge 3 ]]; then
-    xdotool type $pw
-    xdotool key Return
+    wtype $pw
+    wtype -k Return
 fi

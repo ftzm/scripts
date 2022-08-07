@@ -3,7 +3,7 @@
 amixer -c 0 set Master 3dB$1 -q
 
 if [ -e "/tmp/statuspipe.fifo" ]; then
-	vol=`amixer get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//' | head -n1`
+	vol=`amixer -c 0 get Master | grep -oE "[[:digit:]]*%" | sed 's/.$//' | head -n1`
 	echo "v;$vol" > "/tmp/statuspipe.fifo"
 fi
 

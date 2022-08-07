@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set eu
 
 #defaults
 metric="3,3" # measure cpu
@@ -44,7 +46,7 @@ if [ $cutoff != 0 ]; then
 	IFS=" "
 		set -- $p
 		if (( $(bc <<< "$1 > $cutoff") )); then
-			remaining_procs+=$(printf "\n$p")
+			remaining_procs+=$(printf '\n%s' "$p")
 		fi
 	IFS=$'\n'
 	done
@@ -74,7 +76,7 @@ for p in $procs; do
 				fi
 				shift
 			done
-		elif [[ $2 == /* ]]; then
+		elif [[ ${2-} == /* ]]; then
 			IFS="/"
 			dir=( $2 )
 			name1=${dir[-1]}
